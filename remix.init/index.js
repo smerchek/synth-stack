@@ -17,11 +17,17 @@ function getRandomString(length) {
 async function main({ rootDirectory }) {
   const README_PATH = path.join(rootDirectory, "README.md");
   const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
+  const FLY_GRAFANA_TOML_PATH = path.join(
+    rootDirectory,
+    "ops",
+    "grafana",
+    "fly.toml"
+  );
   const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
   const ENV_PATH = path.join(rootDirectory, ".env");
   const PACKAGE_JSON_PATH = path.join(rootDirectory, "package.json");
 
-  const REPLACER = "synth-stack-template";
+  const REPLACER = "synth-stack-1377";
 
   const DIR_NAME = path.basename(rootDirectory);
   const SUFFIX = getRandomString(2);
@@ -30,12 +36,14 @@ async function main({ rootDirectory }) {
     // get rid of anything that's not allowed in an app name
     .replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const [prodContent, readme, env, packageJson] = await Promise.all([
-    fs.readFile(FLY_TOML_PATH, "utf-8"),
-    fs.readFile(README_PATH, "utf-8"),
-    fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
-    fs.readFile(PACKAGE_JSON_PATH, "utf-8"),
-  ]);
+  const [prodContent, grafanaContent, readme, env, packageJson] =
+    await Promise.all([
+      fs.readFile(FLY_TOML_PATH, "utf-8"),
+      fs.readFile(FLY_GRAFANA_TOML_PATH, "utf-8"),
+      fs.readFile(README_PATH, "utf-8"),
+      fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
+      fs.readFile(PACKAGE_JSON_PATH, "utf-8"),
+    ]);
 
   const newEnv = env.replace(
     /^SESSION_SECRET=.*$/m,
@@ -44,6 +52,9 @@ async function main({ rootDirectory }) {
 
   const prodToml = toml.parse(prodContent);
   prodToml.app = prodToml.app.replace(REPLACER, APP_NAME);
+
+  const grafanaToml = toml.parse(grafanaContent);
+  grafanaToml.app = grafanaToml.app.replace(REPLACER, `${APP_NAME}-grafana`);
 
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),
@@ -59,6 +70,7 @@ async function main({ rootDirectory }) {
 
   await Promise.all([
     fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
+    fs.writeFile(FLY_GRAFANA_TOML_PATH, toml.stringify(grafanaToml)),
     fs.writeFile(README_PATH, newReadme),
     fs.writeFile(ENV_PATH, newEnv),
     fs.writeFile(PACKAGE_JSON_PATH, newPackageJson),

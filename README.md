@@ -87,11 +87,12 @@ Prior to your first deployment, you'll need to do a few things:
 
   > **Note:** If you have more than one Fly account, ensure that you are signed into the same account in the Fly CLI as you are in the browser. In your terminal, run `fly auth whoami` and ensure the email matches the Fly account signed into the browser.
 
-- Create two apps on Fly, one for staging and one for production:
+- Create two apps on Fly, one for staging, one for production, and one for Grafana:
 
   ```sh
   fly create synth-stack-1377
   fly create synth-stack-1377-staging
+  fly create synth-stack-1377-grafana
   ```
 
 - Initialize Git.
@@ -124,6 +125,18 @@ Prior to your first deployment, you'll need to do a few things:
   > This simply means that the current directory contains a config that references the production app we created in the first step. Ignore this warning and proceed to create the secret.
 
   If you don't have openssl installed, you can also use [1password](https://1password.com/generate-password) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
+
+- Create a persistent volume for both your Grafana instance. Run the following:
+
+  ```sh
+  fly volumes create grafana_storage --region dfw --size 10 --config ./ops/grafana/fly.toml
+  ```
+
+- Deploy the Grafana instance, since this is not part of the Github Action pipeline. Run the following:
+
+  ```sh
+  fly deploy ./ops/grafana
+  ```
 
 - Create a database for both your staging and production environments. Run the following:
 
