@@ -90,9 +90,9 @@ Prior to your first deployment, you'll need to do a few things:
 - Create two apps on Fly, one for staging, one for production, and one for Grafana:
 
   ```sh
-  fly create synth-stack-1377
-  fly create synth-stack-1377-staging
-  fly create synth-stack-1377-grafana
+  fly create synth-stack-template
+  fly create synth-stack-template-staging
+  fly create synth-stack-template-grafana
   ```
 
 - Initialize Git.
@@ -112,14 +112,14 @@ Prior to your first deployment, you'll need to do a few things:
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
   ```sh
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app synth-stack-1377
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app synth-stack-1377-staging
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app synth-stack-template
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app synth-stack-template-staging
   ```
 
   > **Note:** When creating the staging secret, you may get a warning from the Fly CLI that looks like this:
   >
   > ```
-  > WARN app flag 'synth-stack-1377-staging' does not match app name in config file 'synth-stack-1377'
+  > WARN app flag 'synth-stack-template-staging' does not match app name in config file 'synth-stack-template'
   > ```
   >
   > This simply means that the current directory contains a config that references the production app we created in the first step. Ignore this warning and proceed to create the secret.
@@ -141,11 +141,11 @@ Prior to your first deployment, you'll need to do a few things:
 - Create a database for both your staging and production environments. Run the following:
 
   ```sh
-  fly postgres create --name synth-stack-1377-db
-  fly postgres attach --postgres-app synth-stack-1377-db --app synth-stack-1377
+  fly postgres create --name synth-stack-template-db
+  fly postgres attach --postgres-app synth-stack-template-db --app synth-stack-template
 
-  fly postgres create --name synth-stack-1377-staging-db
-  fly postgres attach --postgres-app synth-stack-1377-staging-db --app synth-stack-1377-staging
+  fly postgres create --name synth-stack-template-staging-db
+  fly postgres attach --postgres-app synth-stack-template-staging-db --app synth-stack-template-staging
   ```
 
   > **Note:** You'll get the same warning for the same reason when attaching the staging database that you did in the `fly set secret` step above. No worries. Proceed!

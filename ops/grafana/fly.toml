@@ -1,4 +1,4 @@
-app = "synth-stack-1377-grafana"
+app = "synth-stack-template-grafana"
 
 [build]
 image = "grafana/grafana-oss:8.4.5"

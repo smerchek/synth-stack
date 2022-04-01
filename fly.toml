@@ -1,4 +1,4 @@
-app = "synth-stack-1377"
+app = "synth-stack-template"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
