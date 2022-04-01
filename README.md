@@ -1,6 +1,6 @@
 # Remix Synth Stack
 
-![The Remix Synth Stack](https://repository-images.githubusercontent.com/461012689/37d5bd8b-fa9c-4ab0-893c-f0a199d5012d)
+![The Remix Synth Stack](https://user-images.githubusercontent.com/521613/161325137-23e3fddc-a206-44f0-b918-714f75673a99.png)
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
